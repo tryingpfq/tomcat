@@ -17,6 +17,7 @@
 
 package org.apache.catalina.tribes.util;
 
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -160,7 +161,12 @@ public class StringManager {
         if (value == null) {
             value = key;
         }
-
+        try {
+            //编码问题 https://blog.csdn.net/zhoutaoping1992/article/details/104751705
+            value = new String(value.getBytes("ISO-8859-1"), "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         MessageFormat mf = new MessageFormat(value);
         mf.setLocale(locale);
         return mf.format(args, new StringBuffer(), null).toString();
