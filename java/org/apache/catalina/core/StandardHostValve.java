@@ -119,6 +119,9 @@ final class StandardHostValve extends ValveBase {
             // application defined error pages so DO NOT forward them to the the
             // application for processing.
             try {
+                /**
+                 * 如果这个resp 不是error
+                 */
                 if (!response.isErrorReportRequired()) {
                     context.getPipeline().getFirst().invoke(request, response);
                 }

@@ -76,6 +76,9 @@ public class Connector extends LifecycleMBeanBase  {
         configuredProtocol = protocol;
         ProtocolHandler p = null;
         try {
+            /**
+             * 创建协议处理器
+             */
             p = ProtocolHandler.create(protocol);
         } catch (Exception e) {
             log.error(sm.getString(

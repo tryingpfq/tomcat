@@ -218,6 +218,9 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
 
             // Start poller thread
             poller = new Poller();
+            /**
+             * 以守护线程的形式启动这个poll线程
+             */
             Thread pollerThread = new Thread(poller, getName() + "-Poller");
             pollerThread.setPriority(threadPriority);
             pollerThread.setDaemon(true);
@@ -644,7 +647,8 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
             while (true) {
 
                 boolean hasEvents = false;
-
+                // 这里是对客户端请求的监听，服务器启动后，
+                //这里会一直循环的轮行，判断是否有新的事件
                 try {
                     if (!close) {
                         hasEvents = events();
@@ -653,6 +657,12 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
                             // Do a non blocking select
                             keyCount = selector.selectNow();
                         } else {
+                            /**这个地方是个阻塞过程，但有个超时机制，这里默认是1秒
+                             * 这里其实可以了解下这selector,这个首先类是SelectorImpl
+                             * windows来说，真正的实现{@link WindowsSelectorImpl#doSelect(long)}
+                             * 底层是poll模型，调用的是本地方法，应该就是调用操作系统底层API{@link WindowsSelectorImpl.SubSelector#poll0(long, int, int[], int[], int[], long)}
+                             * 如果会有新的事件，那么keyCount就会大于0
+                             */
                             keyCount = selector.select(selectorTimeout);
                         }
                         wakeupCounter.set(0);
@@ -690,6 +700,9 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
                         iterator.remove();
                     } else {
                         iterator.remove();
+                        /**
+                         * 处理事件
+                         */
                         processKey(sk, socketWrapper);
                     }
                 }
@@ -702,6 +715,9 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
         }
 
         protected void processKey(SelectionKey sk, NioSocketWrapper socketWrapper) {
+            /**
+             * 根据事件类型进行处理
+             */
             try {
                 if (close) {
                     cancelledKey(sk, socketWrapper);
@@ -723,6 +739,9 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
                                         socketWrapper.readBlocking = false;
                                         socketWrapper.readLock.notify();
                                     }
+                                    /**
+                                     * 打开读事件
+                                     */
                                 } else if (!processSocket(socketWrapper, SocketEvent.OPEN_READ, true)) {
                                     closeSocket = true;
                                 }
@@ -1511,13 +1530,18 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
      * external Executor thread pool.
      */
     protected class SocketProcessor extends SocketProcessorBase<NioChannel> {
-
+        /**
+         * 单独的一个任务线程
+         */
         public SocketProcessor(SocketWrapperBase<NioChannel> socketWrapper, SocketEvent event) {
             super(socketWrapper, event);
         }
 
         @Override
         protected void doRun() {
+            /**
+             * 获取客户端连接的socket
+             */
             NioChannel socket = socketWrapper.getSocket();
             Poller poller = NioEndpoint.this.poller;
             if (poller == null) {
@@ -1560,6 +1584,9 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
                     if (event == null) {
                         state = getHandler().process(socketWrapper, SocketEvent.OPEN_READ);
                     } else {
+                        /**
+                         * 处理事件
+                         */
                         state = getHandler().process(socketWrapper, event);
                     }
                     if (state == SocketState.CLOSED) {

@@ -430,6 +430,9 @@ public final class Request {
             if (param == null) {
                 hook.action(actionCode, this);
             } else {
+                /**
+                 * tomcat 匹配的是 '/'
+                 */
                 hook.action(actionCode, param);
             }
         }

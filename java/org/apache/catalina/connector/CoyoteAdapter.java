@@ -336,6 +336,9 @@ public class CoyoteAdapter implements Adapter {
                 request.setAsyncSupported(
                         connector.getService().getContainer().getPipeline().isAsyncSupported());
                 // Calling the container
+                /**
+                 * 核心就在这里面了 {@link StandardEngineValve#invoke(org.apache.catalina.connector.Request, org.apache.catalina.connector.Response)}
+                 */
                 connector.getService().getContainer().getPipeline().getFirst().invoke(
                         request, response);
             }

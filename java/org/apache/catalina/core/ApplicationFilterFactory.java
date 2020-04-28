@@ -75,7 +75,9 @@ public final class ApplicationFilterFactory {
             // Request dispatcher in use
             filterChain = new ApplicationFilterChain();
         }
-
+        /**
+         * 把这个请求的Servlet 注册到这个filterChain中去
+         */
         filterChain.setServlet(servlet);
         filterChain.setServletSupportsAsync(wrapper.isAsyncSupported());
 
@@ -113,6 +115,9 @@ public final class ApplicationFilterFactory {
                 // FIXME - log configuration problem
                 continue;
             }
+            /**
+             * 把Filter 添加到 这条链路中去
+             */
             filterChain.addFilter(filterConfig);
         }
 

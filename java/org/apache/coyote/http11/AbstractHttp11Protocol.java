@@ -70,7 +70,9 @@ public abstract class AbstractHttp11Protocol<S> extends AbstractProtocol<S> {
         for (UpgradeProtocol upgradeProtocol : upgradeProtocols) {
             configureUpgradeProtocol(upgradeProtocol);
         }
-
+        /**
+         * 初始化协议的时候 会对服务端端口进行启动
+         */
         super.init();
     }
 

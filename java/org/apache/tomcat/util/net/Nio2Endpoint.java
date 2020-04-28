@@ -109,6 +109,10 @@ public class Nio2Endpoint extends AbstractJsseEndpoint<Nio2Channel,AsynchronousS
     public void bind() throws Exception {
 
         // Create worker collection
+        /**
+         * 这开始是没有初始化这个上次分发线程池的
+         * 只有在绑定端口的时候，会初始化
+         */
         if (getExecutor() == null) {
             createExecutor();
         }
@@ -1578,7 +1582,9 @@ public class Nio2Endpoint extends AbstractJsseEndpoint<Nio2Channel,AsynchronousS
      * external Executor thread pool.
      */
     protected class SocketProcessor extends SocketProcessorBase<Nio2Channel> {
-
+        /**
+         * 任务
+         */
         public SocketProcessor(SocketWrapperBase<Nio2Channel> socketWrapper, SocketEvent event) {
             super(socketWrapper, event);
         }

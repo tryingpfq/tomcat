@@ -92,6 +92,10 @@ public class Acceptor<U> implements Runnable {
                 try {
                     // Accept the next incoming connection from the server
                     // socket
+                    /**
+                     * 这里是阻塞的，暂时还不知道这个具体是干什么的
+                     * 只有等有连接来了后，才会被唤醒 {@link ServerSocketChannelImpl#accept0(java.io.FileDescriptor, java.io.FileDescriptor, java.net.InetSocketAddress[])}
+                     */
                     socket = endpoint.serverSocketAccept();
                 } catch (Exception ioe) {
                     // We didn't get a socket

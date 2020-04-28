@@ -93,6 +93,9 @@ final class StandardContextValve extends ValveBase {
         if (request.isAsyncSupported()) {
             request.setAsyncSupported(wrapper.getPipeline().isAsyncSupported());
         }
+        /**
+         * wapper 处理
+         */
         wrapper.getPipeline().getFirst().invoke(request, response);
     }
 }

@@ -36,6 +36,9 @@ public class Http11NioProtocol extends AbstractHttp11JsseProtocol<NioChannel> {
 
 
     public Http11NioProtocol() {
+        /**
+         * http 默认使用的是NipEndPoint
+         */
         super(new NioEndpoint());
     }
 

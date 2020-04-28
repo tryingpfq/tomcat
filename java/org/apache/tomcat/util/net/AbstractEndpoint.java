@@ -1064,12 +1064,21 @@ public abstract class AbstractEndpoint<S,U> {
                 sc = processorCache.pop();
             }
             if (sc == null) {
+                /**
+                 * 为客户端创建创建Socket处理器
+                 * 问题来了，这个是否可以被循环利用呢 上面这个缓存是用力啊干嘛的呢 TODO
+                 * 其实这里就是创建一个任务线程
+                 */
                 sc = createSocketProcessor(socketWrapper, event);
             } else {
                 sc.reset(socketWrapper, event);
             }
             Executor executor = getExecutor();
             if (dispatch && executor != null) {
+                /**
+                 * 把任务提交给线程池，但这里并没有保证线程安全吧，但好像业务处理都会在上面
+                 * 创建的sc中一次性处理
+                 */
                 executor.execute(sc);
             } else {
                 sc.run();

@@ -23,6 +23,7 @@ import jakarta.servlet.ServletException;
 import org.apache.catalina.Host;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
+import org.apache.catalina.valves.AbstractAccessLogValve;
 import org.apache.catalina.valves.ValveBase;
 
 /**
@@ -71,6 +72,9 @@ final class StandardEngineValve extends ValveBase {
         }
 
         // Ask this Host to process this request
+        /**
+         * {@link AbstractAccessLogValve#invoke(org.apache.catalina.connector.Request, org.apache.catalina.connector.Response)}
+         */
         host.getPipeline().getFirst().invoke(request, response);
     }
 }

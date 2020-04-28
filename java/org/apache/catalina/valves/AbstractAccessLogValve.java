@@ -690,6 +690,7 @@ public abstract class AbstractAccessLogValve extends ValveBase implements Access
                 element.cache(request);
             }
         }
+
         getNext().invoke(request, response);
     }
 

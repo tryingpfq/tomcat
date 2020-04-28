@@ -598,7 +598,9 @@ public class StandardWrapper extends ContainerBase
 
 
     /**
-     * Set the associated servlet instance.
+     * 对于web来说，tomcat会统一 把请求派发给 {@link DispatcherServlet}
+     * 然后上层交给 dispatcherServlet 进行任务分发
+     * 这里dispatcherServelt会注册到tomcat中对应的wrapper中
      */
     @Override
     public void setServlet(Servlet servlet) {
@@ -981,6 +983,9 @@ public class StandardWrapper extends ContainerBase
      */
     @Override
     public synchronized void load() throws ServletException {
+        /**
+         *  启服的时候 会注册 servlet 到对应的wrapper中
+         */
         instance = loadServlet();
 
         if (!instanceInitialized) {

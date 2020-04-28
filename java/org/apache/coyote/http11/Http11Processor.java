@@ -346,6 +346,9 @@ public class Http11Processor extends AbstractProcessor {
                 // Setting up filters, and parse some request headers
                 rp.setStage(org.apache.coyote.Constants.STAGE_PREPARE);
                 try {
+                    /**
+                     * 准备处理请求
+                     */
                     prepareRequest();
                 } catch (Throwable t) {
                     ExceptionUtils.handleThrowable(t);
@@ -370,6 +373,9 @@ public class Http11Processor extends AbstractProcessor {
             if (getErrorState().isIoAllowed()) {
                 try {
                     rp.setStage(org.apache.coyote.Constants.STAGE_SERVICE);
+                    /**
+                     * 看着这里了吗 上面都是准备工作，这里会真正的执行这个具体逻辑
+                     */
                     getAdapter().service(request, response);
                     // Handle when the response was committed before a serious
                     // error occurred.  Throwing a ServletException should both
